@@ -7,3 +7,5 @@ This project came to mind after noticing our mostly friendly cat "Gubben" starti
 it still bothered me and my significant other. Especially when heading into the shower for a steamy refreshment, the odors can be quite unpleasant.
 Hence, the **Cat Alarm**. It's a simple alarm that utilizes two **Piezo Buzzers** one **active** and one **passive** to produce an suddle sound unpleasant to
 most unsuspecting felines. With great hopes of having Gubben rethink his choice of toilet. I will briefly cover how to assemble this machine.
+
+## Modules needed
