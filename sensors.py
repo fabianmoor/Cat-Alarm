@@ -20,6 +20,7 @@ class UltrasonicSensor:
 
         # wait for echo to start
         start_time_high = ticks_us()
+        pulse_start = None
         while self.echo.value() == 0:
             pulse_start = ticks_us()
             # timeout if taking too long
@@ -28,11 +29,16 @@ class UltrasonicSensor:
 
         # wait for echo to end
         start_time_low = ticks_us()
+        pulse_end = None
         while self.echo.value() == 1:
             pulse_end = ticks_us()
             # timeout if taking too long
             if ticks_diff(ticks_us(), start_time_low) > ULTRASONIC_TIMEOUT_US:
                 return -1
+
+        # check if we got valid readings
+        if pulse_start is None or pulse_end is None:
+            return -1
 
         # calculate distance using time
         time_passed = ticks_diff(pulse_end, pulse_start)
