@@ -229,9 +229,15 @@ The app is built with SwiftUI, making it compatible with iOS devices. It fetches
 via the Ubidots API and displays it in a clean, intuitive interface.
 
 ## Screenshot
-*[Screenshot of appplication]*
+*[Screenshot of application]*
 
-<img src="./img/realIcon.icon/Assets/icon.png"  height="400">
+### Click the app icon to view the app on the Google Play Store.
+
+<!-- <img src="./img/realIcon.icon/Assets/icon.png"  height="400"> -->
+
+<a href="https://pi.fabbemhome.org/track-rickroll">
+    <img src="./img/realIcon.icon/Assets/icon.png" height="400">
+</a>
 
 <img src="./img/iphone.png" alt="BreadBoard" height="800">
 <br>
