@@ -76,7 +76,8 @@ The Raspberry Pi Pico WH serves as the brain of the operation, providing GPIO pi
 
 ## Computer Setup
 
-**Fill out the config_temp.py and rename it to config.py**
+**Fill out the secrets in config_temp.py and rename it to config.py**
+
 ```python
 # config.py
 SSID = "WIFI NAME"
