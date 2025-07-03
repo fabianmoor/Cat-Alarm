@@ -2,6 +2,8 @@
 * Fabian Moor Pucar (fm222wi)
 * Time to build: 5-7 hours
 
+
+![Roll Counter](http://pi.fabbemhome.org/rick-roll-counter.png)
 ## Project Overview
 This project addresses an unwanted feline bathroom behavior through IoT technology. The Cat Alarm is a smart deterrent device that utilizes dual piezo buzzers to create an effective sound barrier, discouraging cats from using inappropriate bathroom locations like showers. The system combines hardware sensors with programmable logic to provide an automated, humane solution for pet behavior modification.
 
