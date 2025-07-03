@@ -76,6 +76,31 @@ The Raspberry Pi Pico WH serves as the brain of the operation, providing GPIO pi
 
 ## Computer Setup
 
+**Fill out the config_temp.py and rename it to config.py**
+```python
+# config.py
+SSID = "WIFI NAME"
+PASSWORD = "WIFI PASSWORD"
+TOKEN = "UBIDOTS TOKEN"
+UBIDOTS_BASE_URL = "https://industrial.api.ubidots.com/api/v1.6/devices/"
+DEVICE_LABEL = "DEVICE LABEL"
+VARIABLE_LABEL = "VARIABLE NAME"
+VARIABLE_LABEL_2 = "VARIABLE NAME 2"
+
+LED_PIN = "LED"
+PUSH_BUTTON_PIN = 18
+
+TONES = {
+    "E5": 659,
+    "E6": 1319,
+}
+
+TOGGLE_INTERVAL_MS = 50
+
+MAX_WIFI_ATTEMPTS = 20
+ULTRASONIC_TIMEOUT_US = 25000
+```
+
 **IDE:** NeoVim  
 **Microcontroller:** Raspberry Pi Pico WH  
 **Programming Language:** MicroPython  
