@@ -212,6 +212,10 @@ alarm has been triggered and how often the cat attempts to use the shower.
 In order to truly understand how to visualize the data, I added a graph that contains
 at which distance the alarm has been triggered. This helps me understand if the cat at 
 some point got used to the sound and starts to investigate it more closely. 
+
+<img src="./img/ubidots.png" alt="BreadBoard" height="800">
+<br>
+
 ### iOS App
 I created a simple iOS app using SwiftUI to visualize the activity from Ubidots. The app
 displays the total number of times the alarm has been triggered, providing a quick 
