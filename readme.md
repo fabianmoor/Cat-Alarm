@@ -213,7 +213,7 @@ In order to truly understand how to visualize the data, I added a graph that con
 at which distance the alarm has been triggered. This helps me understand if the cat at 
 some point got used to the sound and starts to investigate it more closely. 
 
-<img src="./img/ubidots.png" alt="BreadBoard" height="800">
+<img src="./img/ubidots.png" alt="BreadBoard" height="400">
 <br>
 
 ### iOS App
