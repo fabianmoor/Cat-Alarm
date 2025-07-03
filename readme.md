@@ -1,11 +1,16 @@
 # Cat Alarm IoT Device
 * Fabian Moor Pucar (fm222wi)
-* Time to build: 5-7 hours
+* Guided assembly: 5-7 hours
+* Total project time: aprox. 100 hours
 
 
 ![Roll Counter](http://pi.fabbemhome.org/rick-roll-counter.png)
 ## Project Overview
 This project addresses an unwanted feline bathroom behavior through IoT technology. The Cat Alarm is a smart deterrent device that utilizes dual piezo buzzers to create an effective sound barrier, discouraging cats from using inappropriate bathroom locations like showers. The system combines hardware sensors with programmable logic to provide an automated, humane solution for pet behavior modification.
+
+**Requirements**:
+- WiFi
+- Ubidots account
 
 ## Objective
 This project was conceived after observing our cat "Gubben" consistently using the shower as an alternative bathroom facility. While preferable to furniture, this behavior created unpleasant odors and hygiene concerns. 
@@ -114,9 +119,15 @@ ULTRASONIC_TIMEOUT_US = 25000
 - `ujson` - JSON handling for data formatting
 
 **Setup steps:**
-1. Install MicroPython firmware on Raspberry Pi Pico WH
+1. Flash MicroPython firmware on Raspberry Pi Pico WH
+   - Download the latest MicroPython firmware from the [official website](https://micropython.org/download/rp2-pico-w/)
+   - Connect the Pico WH to your computer while holding the BOOTSEL button
+   - Copy the firmware file to the Pico's mounted drive
 2. Configure NeoVim with MicroPython support
+    - Install the `nvim-micropython` plugin for NeoVim
 3. Set up file transfer method (ampy or Thonny)
+   - Use `ampy` to transfer files to the Pico WH
+    - Install `ampy` via pip: `pip install adafruit-ampy`
 
 ## Putting Everything Together
 
@@ -231,8 +242,10 @@ When the distance is less than 20cm, it activates the buzzers and sends an activ
 If the sensor is inactive, the buzzers and LED are turned off, and no data is sent to Ubidots.
 ### Monitoring
 
-For monitoring, I used Ubidots to visualize the data. The system sends activation events 
-in the form of a value of 1 to the variable. This allows me to track how many times the 
+For monitoring, I used Ubidots to visualize the data via HTTP requests. 
+I chose Ubidots cause I'm pretty familair with HTTP requests from building scrapers
+in python. Worked a lot with flask api's, so Ubidots felt the most natural to me.
+The system sends activation events in the form of a value of 1 to the variable. This allows me to track how many times the 
 alarm has been triggered and how often the cat attempts to use the shower.
 
 In order to truly understand how to visualize the data, I added a graph that contains
@@ -273,3 +286,18 @@ via the Ubidots API and displays it in a clean, intuitive interface.
 
 <img src="./img/iphone.png" alt="BreadBoard" height="800">
 <br>
+
+## Conclusion
+This project successfully demonstrates the integration of IoT technology to 
+address a common pet behavior issue. The Cat Alarm effectively deters unwanted 
+feline bathroom habits through automated sound-based deterrents, providing a 
+humane solution without requiring constant human intervention and allowing 
+for remote monitoring via Ubidots. The modular design of the code and hardware 
+allows for future enhancements, such as adding more sensors or actuators.
+
+The insights gained from this project include a better understanding of sound-based
+deterrent effectiveness, IoT sensor integration, and automated behavior modification
+through technology. The project also highlights the importance of humane solutions
+to pet behavior issues, demonstrating how technology can improve the quality of life for both pets and their owners.
+
+<img src="./img/irlimg.png" alt="Cat Alarm" height="400">
