@@ -81,6 +81,8 @@ The Raspberry Pi Pico WH serves as the brain of the operation, providing GPIO pi
 
 ## Computer Setup
 
+### Development Environment Setup
+
 **Fill out the secrets in config_temp.py and rename it to config.py**
 
 ```python
@@ -129,6 +131,18 @@ ULTRASONIC_TIMEOUT_US = 25000
    - Use `ampy` to transfer files to the Pico WH
     - Install `ampy` via pip: `pip install adafruit-ampy`
 
+**Code Upload Workflow:**
+1. Write code in NeoVim with MicroPython syntax highlighting
+2. Transfer files to Pico WH using ampy: `ampy --port /dev/ttyACM0 put main.py`
+- **For Mac** use: `ampy --port /dev/tty.usbmodem* put main.py`
+3. Reset the device to run the new code
+4. Monitor output via serial connection: `screen /dev/ttyACM0 115200`
+
+**Additional Requirements:**
+- Python 3.x installed on development machine
+- USB drivers for Raspberry Pi Pico (usually automatic on macOS)
+- Serial terminal software for debugging (screen, minicom, or similar)
+
 ## Putting Everything Together
 
 ### Pin Connections:
@@ -165,6 +179,12 @@ Either by the Pin Connections above or the Circuit Diagram below.
 
 I did not make use of any resistors, as the components are designed to work with the Pico's GPIO pins directly.
 However, if you want to be extra careful, you can add a 1kΩ resistor in series with the button to limit current flow.
+
+**Electrical Considerations:**
+- All components operate at 3.3V, matching the Pico's GPIO output voltage
+- Current consumption: HC-SR04 (~15mA), Active Buzzer (~30mA), Passive Buzzer (~20mA)
+- Total system current draw: approximately 65-70mA during alarm activation
+- This setup is suitable for development and prototyping; for production use, consider adding proper pull-up/pull-down resistors and decoupling capacitors
 
 ### Code Overview
 
@@ -255,6 +275,85 @@ some point got used to the sound and starts to investigate it more closely.
 <img src="./img/ubidots.png" alt="BreadBoard" height="400">
 <br>
 
+## Platform Choice and Data Transmission
+
+### Platform Selection
+I chose **Ubidots** as my IoT platform for several key reasons:
+
+**Functionality:**
+- RESTful API for easy HTTP-based data transmission
+- Real-time dashboard visualization
+- Free tier suitable for small-scale projects (up to 3 devices, 4000 dots/month)
+- Built-in analytics and data aggregation features
+
+**Why Ubidots over alternatives:**
+- **vs ThingSpeak**: Better visualization options and more intuitive dashboard creation
+- **vs AWS IoT Core**: Simpler setup without complex authentication protocols
+- **vs Blynk**: More robust for data logging and historical analysis
+- **vs Local solution**: Cloud-based ensures data persistence and remote access
+
+**Scaling considerations:**
+- Free tier: Suitable for personal/prototype use
+- Industrial tier ($20/month): Supports unlimited devices and data points
+- Enterprise options available for commercial deployment
+- API-first design allows easy migration to custom solutions if needed
+
+### Data Transmission Details
+
+**Transmission Frequency:**
+- Activation events: Sent immediately when alarm triggers (with 5-second cooldown)
+- Distance measurements: Logged every 50ms locally, transmitted only during activations
+- No continuous polling to preserve battery and reduce API calls
+
+**Wireless Protocol:**
+- **WiFi (802.11 b/g/n)**: Chosen for reliable indoor coverage and high data throughput
+- Range: ~30-50 meters indoors (sufficient for home use)
+- Power consumption: ~70mA during transmission (acceptable for USB-powered device)
+
+**Transport Protocol:**
+- **HTTP/HTTPS**: RESTful API calls to Ubidots endpoints
+- **JSON payload**: Structured data format for easy parsing
+- **POST requests**: Sending sensor data and activation events
+
+**Design Choice Rationale:**
+- **WiFi vs LoRaWAN**: WiFi chosen for indoor use with existing home network infrastructure
+- **HTTP vs MQTT**: HTTP selected for simplicity and Ubidots compatibility
+- **Security**: HTTPS ensures encrypted data transmission
+- **Battery impact**: USB power eliminates battery concerns, allowing frequent transmissions
+
+**Data Structure:**
+```json
+{
+  "activation": 1,
+  "distance": 15.2,
+  "timestamp": 1625097600
+}
+```
+
+## Presenting the Data
+
+### Dashboard Visualization
+The Ubidots dashboard provides real-time visualization of the Cat Alarm's activity:
+
+<img src="./img/ubidots.png" alt="Ubidots Dashboard" height="400">
+
+**Dashboard Features:**
+- **Activation Counter**: Displays total number of times the alarm has been triggered
+- **Distance Graph**: Shows the distance measurements when alarm activates
+- **Real-time Updates**: Data refreshes automatically when new events occur
+- **Historical Data**: Maintains logs for trend analysis over time
+
+**Data Storage:**
+- **Database**: Ubidots cloud database stores all sensor data
+- **Frequency**: Data is saved immediately upon alarm activation (with 5-second cooldown)
+- **Retention**: Free tier provides 1 month of data history
+- **Format**: JSON format with timestamp, activation status, and distance measurements
+
+**Automation Features:**
+- **Triggers**: Could be configured to send email/SMS alerts when activation threshold is exceeded
+- **Webhooks**: Available for integration with other services (IFTTT, Zapier)
+- **API Access**: RESTful API allows custom applications to access data
+
 ### iOS App
 I created a simple iOS app using SwiftUI to visualize the activity from Ubidots. The app
 displays the total number of times the alarm has been triggered, providing a quick 
@@ -287,17 +386,45 @@ via the Ubidots API and displays it in a clean, intuitive interface.
 <img src="./img/iphone.png" alt="BreadBoard" height="800">
 <br>
 
-## Conclusion
-This project successfully demonstrates the integration of IoT technology to 
-address a common pet behavior issue. The Cat Alarm effectively deters unwanted 
-feline bathroom habits through automated sound-based deterrents, providing a 
-humane solution without requiring constant human intervention and allowing 
-for remote monitoring via Ubidots. The modular design of the code and hardware 
-allows for future enhancements, such as adding more sensors or actuators.
+## Finalizing the Design
 
-The insights gained from this project include a better understanding of sound-based
-deterrent effectiveness, IoT sensor integration, and automated behavior modification
-through technology. The project also highlights the importance of humane solutions
-to pet behavior issues, demonstrating how technology can improve the quality of life for both pets and their owners.
+### Final Results
+The Cat Alarm project successfully achieved its primary objective of deterring unwanted feline bathroom behavior through automated IoT technology. The system demonstrates reliable operation with consistent sensor readings and effective sound-based deterrents.
 
-<img src="./img/irlimg.png" alt="Cat Alarm" height="400">
+**Project Outcomes:**
+- Successfully detects cat presence within 20cm range
+- Dual buzzer system provides effective deterrent without being harmful
+- Real-time data transmission to Ubidots for monitoring
+- iOS app provides convenient access to activation statistics
+- Modular code design allows for future enhancements
+
+**What Worked Well:**
+- Ultrasonic sensor provides accurate distance measurements
+- Dual buzzer approach creates more effective deterrent than single tone
+- WiFi connectivity enables remote monitoring capabilities
+- Ubidots platform offers excellent visualization tools
+- MicroPython on Pico WH provides stable, reliable operation
+
+**Areas for Improvement:**
+- **Power Management**: Could implement deep sleep mode for battery operation
+- **Enclosure**: Currently breadboard-based; production would need weatherproof housing
+- **Sensitivity Adjustment**: Could add potentiometer for adjustable trigger distance
+- **Multiple Zones**: Could expand to monitor multiple areas simultaneously
+- **Machine Learning**: Could implement pattern recognition to distinguish between cat and other objects
+
+**Alternative Approaches:**
+- **PIR Motion Sensor**: Could use instead of ultrasonic for different detection pattern
+- **Camera-based**: Computer vision could provide more accurate cat identification
+- **MQTT Protocol**: Might offer better real-time performance than HTTP
+- **Local Processing**: Edge computing could reduce cloud dependency
+
+**Production Considerations:**
+- Add proper PCB design with surface-mount components
+- Implement proper power management and battery backup
+- Include weatherproof enclosure for bathroom environment
+- Add configuration interface for sensitivity adjustments
+- Implement over-the-air (OTA) update capability
+
+<img src="./img/irlimg.png" alt="Cat Alarm Final Setup" height="400">
+
+The project successfully demonstrates the practical application of IoT technology to solve real-world problems, combining hardware sensors, cloud connectivity, and mobile applications into a cohesive solution.
