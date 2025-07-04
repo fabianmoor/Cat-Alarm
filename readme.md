@@ -276,7 +276,7 @@ via the Ubidots API and displays it in a clean, intuitive interface.
 ## Screenshot
 *[Screenshot of application]*
 
-### Click the app icon to view the app on the Google Play Store.
+### I don't have a paid Apple Developer account for the App Store but click the app icon to view the app on the Google Play Store.
 
 <!-- <img src="./img/realIcon.icon/Assets/icon.png"  height="400"> -->
 
