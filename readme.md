@@ -3,9 +3,9 @@
 * Guided assembly: 5-7 hours
 * Total project time: aprox. 100 hours
 
-
 ![Roll Counter](http://pi.fabbemhome.org/rick-roll-counter.png)
-## Project Overview
+
+## Short project description
 This project addresses an unwanted feline bathroom behavior through IoT technology. The Cat Alarm is a smart deterrent device that utilizes dual piezo buzzers to create an effective sound barrier, discouraging cats from using inappropriate bathroom locations like showers. The system combines hardware sensors with programmable logic to provide an automated, humane solution for pet behavior modification.
 
 **Requirements**:
@@ -31,7 +31,7 @@ This project was conceived after observing our cat "Gubben" consistently using t
 - Exploring automated behavior modification through technology
 - Insights into pet behavior. For instance, how many times he thinks I'm not looking at him, and how many times he actually uses the shower as a bathroom.
 
-## Material
+## List of material
 
 All components needed for this project are readily available and affordable. Here's what you'll need:
 
@@ -79,7 +79,7 @@ The Raspberry Pi Pico WH serves as the brain of the operation, providing GPIO pi
     <img src="./img/breadboard.jpg" alt="BreadBoard" height="250" width="300">
 </a>
 
-## Computer Setup
+## Computer setup
 
 ### Development Environment Setup
 
@@ -143,7 +143,7 @@ ULTRASONIC_TIMEOUT_US = 25000
 - USB drivers for Raspberry Pi Pico (usually automatic on macOS)
 - Serial terminal software for debugging (screen, minicom, or similar)
 
-## Putting Everything Together
+## Putting everything together
 
 ### Pin Connections:
 * **Ultra Sonic Sensor**
@@ -186,7 +186,30 @@ However, if you want to be extra careful, you can add a 1kΩ resistor in series 
 - Total system current draw: approximately 65-70mA during alarm activation
 - This setup is suitable for development and prototyping; for production use, consider adding proper pull-up/pull-down resistors and decoupling capacitors
 
-### Code Overview
+## Platform
+
+### Platform Selection
+I chose **Ubidots** as my IoT platform for several key reasons:
+
+**Functionality:**
+- RESTful API for easy HTTP-based data transmission
+- Real-time dashboard visualization
+- Free tier suitable for small-scale projects (up to 3 devices, 4000 dots/month)
+- Built-in analytics and data aggregation features
+
+**Why Ubidots over alternatives:**
+- **vs ThingSpeak**: Better visualization options and more intuitive dashboard creation
+- **vs AWS IoT Core**: Simpler setup without complex authentication protocols
+- **vs Blynk**: More robust for data logging and historical analysis
+- **vs Local solution**: Cloud-based ensures data persistence and remote access
+
+**Scaling considerations:**
+- Free tier: Suitable for personal/prototype use
+- Industrial tier ($20/month): Supports unlimited devices and data points
+- Enterprise options available for commercial deployment
+- API-first design allows easy migration to custom solutions if needed
+
+## The code
 
 I decided to separate the code into multiple files for better organization. 
 The main files are:
@@ -206,7 +229,7 @@ press to wake up, rather than using deep sleep mode to avoid USB connection issu
 development. The system properly shuts down all components when entering sleep mode and 
 reactivates them when waking up.
 
-## How It Works
+### How It Works
 
 The system operates through a main event loop that monitors button presses and sensor 
 readings. When activated, the ultrasonic sensor continuously measures distance every 
@@ -217,7 +240,6 @@ sends activation data to Ubidots for remote monitoring with a 5-second cooldown 
 API spam. The onboard LED indicates system status, and button handling supports single 
 press (toggle sensor) and double press (sleep mode). The sleep mode properly shuts down 
 all components and waits for a button press to wake up.
-
 
 ### Code Snippet
 
@@ -260,43 +282,8 @@ If pressed twice (within a second), it puts the device into sleep mode.
 When the sensor is active, it reads the distance every 50ms to be quick to respond.
 When the distance is less than 20cm, it activates the buzzers and sends an activation event to Ubidots.
 If the sensor is inactive, the buzzers and LED are turned off, and no data is sent to Ubidots.
-### Monitoring
 
-For monitoring, I used Ubidots to visualize the data via HTTP requests. 
-I chose Ubidots cause I'm pretty familair with HTTP requests from building scrapers
-in python. Worked a lot with flask api's, so Ubidots felt the most natural to me.
-The system sends activation events in the form of a value of 1 to the variable. This allows me to track how many times the 
-alarm has been triggered and how often the cat attempts to use the shower.
-
-In order to truly understand how to visualize the data, I added a graph that contains
-at which distance the alarm has been triggered. This helps me understand if the cat at 
-some point got used to the sound and starts to investigate it more closely. 
-
-<img src="./img/ubidots.png" alt="BreadBoard" height="400">
-<br>
-
-## Platform Choice and Data Transmission
-
-### Platform Selection
-I chose **Ubidots** as my IoT platform for several key reasons:
-
-**Functionality:**
-- RESTful API for easy HTTP-based data transmission
-- Real-time dashboard visualization
-- Free tier suitable for small-scale projects (up to 3 devices, 4000 dots/month)
-- Built-in analytics and data aggregation features
-
-**Why Ubidots over alternatives:**
-- **vs ThingSpeak**: Better visualization options and more intuitive dashboard creation
-- **vs AWS IoT Core**: Simpler setup without complex authentication protocols
-- **vs Blynk**: More robust for data logging and historical analysis
-- **vs Local solution**: Cloud-based ensures data persistence and remote access
-
-**Scaling considerations:**
-- Free tier: Suitable for personal/prototype use
-- Industrial tier ($20/month): Supports unlimited devices and data points
-- Enterprise options available for commercial deployment
-- API-first design allows easy migration to custom solutions if needed
+## Transmitting the data / connectivity
 
 ### Data Transmission Details
 
@@ -330,7 +317,17 @@ I chose **Ubidots** as my IoT platform for several key reasons:
 }
 ```
 
-## Presenting the Data
+For monitoring, I used Ubidots to visualize the data via HTTP requests. 
+I chose Ubidots cause I'm pretty familair with HTTP requests from building scrapers
+in python. Worked a lot with flask api's, so Ubidots felt the most natural to me.
+The system sends activation events in the form of a value of 1 to the variable. This allows me to track how many times the 
+alarm has been triggered and how often the cat attempts to use the shower.
+
+In order to truly understand how to visualize the data, I added a graph that contains
+at which distance the alarm has been triggered. This helps me understand if the cat at 
+some point got used to the sound and starts to investigate it more closely. 
+
+## Presenting the data
 
 ### Dashboard Visualization
 The Ubidots dashboard provides real-time visualization of the Cat Alarm's activity:
@@ -372,7 +369,7 @@ over time. So resetting it is fine.
 The app is built with SwiftUI, making it compatible with iOS devices. It fetches data
 via the Ubidots API and displays it in a clean, intuitive interface.
 
-## Screenshot
+### Screenshot
 *[Screenshot of application]*
 
 ### I don't have a paid Apple Developer account for the App Store but click the app icon to view the app on the Google Play Store.
@@ -386,7 +383,7 @@ via the Ubidots API and displays it in a clean, intuitive interface.
 <img src="./img/iphone.png" alt="BreadBoard" height="800">
 <br>
 
-## Finalizing the Design
+## Finalizing the design
 
 ### Final Results
 The Cat Alarm project successfully achieved its primary objective of deterring unwanted feline bathroom behavior through automated IoT technology. The system demonstrates reliable operation with consistent sensor readings and effective sound-based deterrents.
@@ -428,3 +425,4 @@ The Cat Alarm project successfully achieved its primary objective of deterring u
 <img src="./img/irlimg.png" alt="Cat Alarm Final Setup" height="400">
 
 The project successfully demonstrates the practical application of IoT technology to solve real-world problems, combining hardware sensors, cloud connectivity, and mobile applications into a cohesive solution.
+
