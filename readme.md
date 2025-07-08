@@ -224,10 +224,6 @@ I chose to use classes for the actuators and sensors to encapsulate their functi
 and make the code more modular. This allows for easier expansion in the future, such 
 as adding more sensors or actuators without cluttering the main logic.
 
-The sleep mode functionality has been implemented as a simple loop that waits for button 
-press to wake up, rather than using deep sleep mode to avoid USB connection issues during 
-development. The system properly shuts down all components when entering sleep mode and 
-reactivates them when waking up.
 
 ### How It Works
 
@@ -238,8 +234,7 @@ provides a steady tone while the passive buzzer alternates between E5 (659Hz) an
 (1319Hz) frequencies every 50ms using a timer-based approach. Simultaneously, the system 
 sends activation data to Ubidots for remote monitoring with a 5-second cooldown to prevent 
 API spam. The onboard LED indicates system status, and button handling supports single 
-press (toggle sensor) and double press (sleep mode). The sleep mode properly shuts down 
-all components and waits for a button press to wake up.
+press to toggle the sensor on or off.
 
 ### Code Snippet
 
@@ -278,7 +273,6 @@ push_button = Pin(PUSH_BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 
 ### Main Loop
 The main loop constantly checks the button state. If pressed once, it toggles the sensor state on or off.
-If pressed twice (within a second), it puts the device into sleep mode.
 When the sensor is active, it reads the distance every 50ms to be quick to respond.
 When the distance is less than 20cm, it activates the buzzers and sends an activation event to Ubidots.
 If the sensor is inactive, the buzzers and LED are turned off, and no data is sent to Ubidots.
