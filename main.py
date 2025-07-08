@@ -29,15 +29,12 @@ push_button = Pin(PUSH_BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 
 # tell user we're ready
 print("=== SYSTEM READY ===")
-print("Single press: Toggle sensor on/off")
-print("Double press: Enter sleep mode")
+print("Press button to toggle sensor on/off")
 print("Current status: System active, sensor OFF")
 
 # variables to keep track of stuff
 led_state = False
 last_button_state = push_button.value()
-button_press_count = 0
-last_button_press_time = ticks_ms()
 last_ubidots_send_time = 0
 UBIDOTS_COOLDOWN_MS = 5000
 
@@ -48,63 +45,15 @@ def update_passive_buzzer_state(activate):
     elif not activate and passive_buzzer.is_active():
         passive_buzzer.deactivate()
 
-# turn everything off when shutting down
-def shutdown_all_components():
-    print("Shutting down all components...")
-    onboard_led.off()
-    print("- LED: OFF")
-    active_buzzer.off()
-    print("- Active buzzer: OFF")
-    passive_buzzer.cleanup()
-    print("- Passive buzzer: CLEANED UP")
-    print("All components shutdown complete")
-
-# sleep mode function
-def enter_sleep_mode():
-    print("\n=== ENTERING SLEEP MODE ===")
-    print("Press the button to wake up the device")
-    shutdown_all_components()
-    sleep(0.1)
-
-    print("Entering sleep mode... ZZZ")
-    print("=== SYSTEM SLEEPING ===\n")
-
-    # keep sleeping until button pressed
-    sleeping = True
-    last_button_state = push_button.value()
-
-    while sleeping:
-        current_button_state = push_button.value()
-        if current_button_state == False and last_button_state == True:
-            print("=== WAKING UP FROM BUTTON PRESS ===")
-            print("System ready - Press button to toggle sensor")
-            sleeping = False
-
-        last_button_state = current_button_state
-        sleep(0.1)
-
 # check if button was pressed
 def check_button_press():
-    global led_state, last_button_state, button_press_count, last_button_press_time
+    global led_state, last_button_state
 
     current_button_state = push_button.value()
     # if button just got pressed
     if current_button_state == False and last_button_state == True:
-        current_time = ticks_ms()
-        # check if this is a double press
-        if ticks_diff(current_time, last_button_press_time) < 1000:
-            button_press_count += 1
-            print(f"Button press #{button_press_count} detected")
-        else:
-            button_press_count = 1
-            print("Button press #1 detected")
-        last_button_press_time = current_time
-
-        # if double press, go to sleep
-        if button_press_count >= 2:
-            print("DOUBLE PRESS DETECTED!")
-            enter_sleep_mode()
-
+        print("Button press detected")
+        
         # toggle the sensor on/off
         led_state = not led_state
         if led_state:
